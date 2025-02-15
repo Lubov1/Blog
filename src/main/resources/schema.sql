@@ -20,6 +20,6 @@ CREATE TABLE IF NOT EXISTS TAGS (
                                         POST_ID BIGINT NOT NULL,
                                         FOREIGN KEY (POST_ID) REFERENCES POSTS(ID) ON DELETE CASCADE
 );
-insert into POSTS (title, content, likes, image) values ('Первый пост', 'Содержимое поста', 10, NULL);
+insert into POSTS (title, content, likes, image) values ('Первый пост', 'Содержимое поста /n str2 /n str3 /n str4', 10, NULL);
 insert into POSTS (title, content, likes, image) values ('Второй пост', 'Текст второго поста', 5, NULL);
 

@@ -1,6 +1,8 @@
 package ru.yandex.practicum.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.Comment;
@@ -11,10 +13,7 @@ import ru.yandex.practicum.dto.PostDTORs;
 import ru.yandex.practicum.dto.TagDTOrq;
 import ru.yandex.practicum.repositories.PostRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @Service
 public class PostService {
@@ -29,9 +28,18 @@ public class PostService {
         this.tagService = tagService;
     }
 
-    public List<PostDTORs> getAllPosts() {
-        return StreamSupport.stream(postRepository.findAll().spliterator(), true)
-                .map(this::convertPostToDTOrs).toList();
+    public Page<PostDTORs> getAllPosts(int page, int size) {
+        int offset = page * size;
+        List<Post> posts = postRepository.getAllPostsWithPagination(size, offset);
+        long total = posts.size();
+        return new PageImpl<>(posts.stream().map(this::convertPostToDTOrs).toList(), PageRequest.of(page, size), total);
+    }
+
+    public Page<PostDTORs> getAllPostsByTag(String tag, int page, int size) {
+        int offset = page * size;
+        List<Post> posts = postRepository.getAllPostsByTag(tag, size, offset);
+        long total = posts.size();
+        return new PageImpl<>(posts.stream().map(this::convertPostToDTOrs).toList(), PageRequest.of(page, size), total);
     }
 
     public PostDTORs convertPostToDTOrs(Post post) {

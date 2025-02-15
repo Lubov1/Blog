@@ -14,6 +14,13 @@
     }
   </style>
 
+  <style>
+    .active {
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+
   <script>
     function likePost(postId) {
       fetch('/like/' + postId, { method: 'POST' })
@@ -35,6 +42,11 @@
 <h1>Лента постов</h1>
 <hr>
 
+<form th:action="@{/posts}" method="get">
+  <input type="text" name="filter" th:value="${filter}" placeholder="Введите тег">
+  <button type="submit">Фильтровать</button>
+</form>
+
 <!-- Вывод списка постов -->
 <div th:each="post : ${posts}" class="postdtors">
   <h2 th:text="${post.title}">Заголовок поста</h2>
@@ -53,10 +65,26 @@
 
   <div class="likes">
     <span th:text="${post.likes}">0</span> лайков
-    <form th:action="@{'/posts/like/' + ${post.id}}" method="post">
+    <form th:action="@{'/posts/like?postId=' + ${post.id}}" method="post">
       <button type="submit">❤️</button>
     </form>
   </div>
+</div>
+
+<div>
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{'/posts?page='+ ${currentPage - 1} +'&filter=' + ${filter}}">Предыдущая</a>
+    </span>
+
+  <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{'/posts?page='+ ${i}+'&filter=' + ${filter}}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active' : ''"></a>
+    </span>
+
+  <span th:if="${currentPage < totalPages - 1}">
+        <a th:href="@{'/posts?page='+ ${currentPage + 1}+'&filter=' + ${filter}}">Следующая</a>
+    </span>
 </div>
 
 <hr>
