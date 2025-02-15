@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Посты</title>
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    .limited-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 3; /* Ограничивает до 3 строк */
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    function likePost(postId) {
+      fetch('/like/' + postId, { method: 'POST' })
+              .then(response => location.reload());
+    }
+
+    function addTagField() {
+      let container = document.getElementById("tagsContainer");
+      let input = document.createElement("input");
+      input.type = "text";
+      input.name = "tags";
+      input.placeholder = "Введите тег";
+      container.appendChild(input);
+    }
+  </script>
+</head>
+<body>
+
+<h1>Лента постов</h1>
+<hr>
+
+<!-- Вывод списка постов -->
+<div th:each="post : ${posts}" class="postdtors">
+  <h2 th:text="${post.title}">Заголовок поста</h2>
+  <div class="limited-text">
+    <span th:text="${post.content}">Текст поста</span>
+  </div>
+
+  <!-- Если изображение хранится как BLOB (byte[]), нужно конвертировать в Base64 -->
+  <div th:if="${post.image}">
+    <img th:src="'data:image/png;base64,' + ${post.image}" alt="Изображение поста" width="300">
+  </div>
+
+  <div class="tag">
+    <p th:each="tag : ${post.tags}" th:text="${tag.text}">Тэг</p>
+  </div>
+
+  <div class="likes">
+    <span th:text="${post.likes}">0</span> лайков
+    <form th:action="@{'/posts/like/' + ${post.id}}" method="post">
+      <button type="submit">❤️</button>
+    </form>
+  </div>
+</div>
+
+<hr>
+
+<h2>Добавить новый пост</h2>
+
+<form th:action="@{/posts/createPost}" method="post" enctype="multipart/form-data">
+  <label>Название:</label>
+  <input type="text" name="title" required><br>
+
+  <label>Текст:</label>
+  <textarea name="content" required></textarea><br>
+
+  <label>Изображение:</label>
+  <input type="file" name="image" ><br>
+
+  <label>Теги:</label>
+  <div id="tagsContainer">
+    <input type="text" name="tags" placeholder="Введите тег">
+  </div>
+  <button type="button" onclick="addTagField()">Добавить тег</button><br>
+
+  <button type="submit">Сохранить пост</button>
+</form>
+
+</body>
+</html>

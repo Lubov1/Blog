@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+
+<style>
+    .limited-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 3; /* Ограничивает до 3 строк */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Посты</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script>
+        function likePost(postId) {
+            fetch('/like/' + postId, { method: 'POST' })
+                .then(response => location.reload());
+        }
+    </script>
+</head>
+<body>
+
+<h1>Лента постов</h1>
+
+
+<hr>
+
+<!-- Вывод списка постов -->
+<div th:each="post : ${posts}">
+    <div class="post">
+        <h2 th:text="${post.title}">Заголовок поста</h2>
+        <div class="limited-text">
+            <span th:text="${post.content}">Текст поста</span>
+        </div>
+        <p th:text="${post.image}">Изображение поста</p>
+        <p th:text="${post.commentsAmount}">Комментарии</p>
+        <div class="tag">
+            <p th:each="tag : ${post.tags}" th:text="${tag.text}">Тэг</p>
+        </div>
+
+
+        <div class="likes">
+            <span th:text="${post.likes}">0</span> лайков
+            <form th:action="@{/post/${post.id}}" method="post">
+                <button type="submit">❤️</button>
+            </form>
+        </div>
+
+        <!-- Форма добавления комментария -->
+<!--        <form th:action="@{/posts/{id}/comments(id=${post.id})}" method="post">-->
+<!--            <input type="text" name="commentText" placeholder="Добавить комментарий" required>-->
+<!--            <button type="submit">Отправить</button>-->
+<!--        </form>-->
+
+        <!-- Вывод комментариев -->
+<!--        <div class="comments">-->
+<!--            <p th:each="comment : ${post.comments}" th:text="${comment.text}">Текст комментария</p>-->
+<!--        </div>-->
+    </div>
+    <hr>
+</div>
+
+
+
+<!-- Форма добавления нового поста -->
+<!--<form th:action="@{/posts}" method="post" enctype="multipart/form-data">-->
+<!--    <input type="text" name="title" placeholder="Заголовок" required>-->
+<!--    <textarea name="content" placeholder="Текст поста" required></textarea>-->
+<!--    <input type="file" name="image">-->
+<!--    <button type="submit">Добавить пост</button>-->
+<!--</form>-->
+
+
+    <script>
+        function addTagField() {
+            let container = document.getElementById("tagsContainer");
+            let input = document.createElement("input");
+            input.type = "text";
+            input.name = "tags";
+            input.placeholder = "Введите тег";
+            container.appendChild(input);
+        }
+    </script>
+
+
+<h2>Добавить новый пост</h2>
+
+<form th:action="@{/createPost}" method="post" enctype="multipart/form-data">
+    <label>Название:</label>
+    <input type="text" name="title" required><br>
+
+    <label>Текст:</label>
+    <textarea name="content" required></textarea><br>
+
+    <label>Изображение:</label>
+    <input type="file" name="image"><br>
+
+    <label>Теги:</label>
+    <div id="tagsContainer">
+        <input type="text" name="tags" placeholder="Введите тег">
+    </div>
+    <button type="button" onclick="addTagField()">Добавить тег</button><br>
+
+    <button type="submit">Сохранить пост</button>
+</form>
+</body>
+</html>
