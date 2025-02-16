@@ -1,8 +1,11 @@
 package ru.yandex.practicum.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
+import javassist.NotFoundException;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +22,13 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostsController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
+    public PostsController(PostService postService) {
+        this.postService = postService;
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public String getPosts(Model model, @RequestParam(defaultValue = "0") int page,
                            @RequestParam(required = false) String filter,
@@ -41,12 +48,14 @@ public class PostsController {
         return "posts";
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/like")
-    public String likePost(@RequestParam Long postId) {
+    public String likePost(@RequestParam Long postId) throws NotFoundException {
         postService.likePost(postId);
         return "redirect:/posts";
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value ="/createPost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createPost(@RequestParam("title") String title
             ,@RequestParam("content") String content,
@@ -61,5 +70,10 @@ public class PostsController {
         }
         postService.createPost(new PostDTORq(title, content, im, tg));
         return "redirect:/posts";
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

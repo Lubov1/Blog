@@ -28,6 +28,4 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
     @Query("SELECT COUNT(*) FROM posts")
     long countPosts();
-
-    void deletePostById(Long id);
 }

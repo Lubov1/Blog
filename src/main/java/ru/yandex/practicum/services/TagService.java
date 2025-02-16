@@ -1,6 +1,5 @@
 package ru.yandex.practicum.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.Tag;
@@ -11,8 +10,11 @@ import java.util.List;
 
 @Service
 public class TagService {
-    @Autowired
-    TagRepository TagRepository;
+    final TagRepository TagRepository;
+
+    public TagService(TagRepository TagRepository) {
+        this.TagRepository = TagRepository;
+    }
 
     public List<Tag> getTags(Long id) {
         return TagRepository.findAllByPostId(id);

@@ -1,6 +1,5 @@
 package ru.yandex.practicum.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,11 @@ import java.util.Optional;
 @RestController
 public class ImageController {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+
+    ImageController(PostRepository postRepository){
+        this.postRepository = postRepository;
+    }
 
     @GetMapping("/image/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Long id) {

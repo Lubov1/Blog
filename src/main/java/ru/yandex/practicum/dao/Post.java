@@ -5,14 +5,10 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
-
-
 @Table("POSTS")
 @Getter
 @Setter
 public class Post {
-
 
     @Id
     private Long id;

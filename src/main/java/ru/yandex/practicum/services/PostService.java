@@ -21,8 +21,8 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private CommentService commentService;
-    private TagService tagService;
+    private final CommentService commentService;
+    private final TagService tagService;
 
 
     public PostService(PostRepository postRepository, CommentService commentService, TagService tagService) {
@@ -54,11 +54,14 @@ public class PostService {
         return new PostDTORs(post, comments, tags);
     }
 
-    public Post getPostById(Long id) {
+    public Post getPostById(Long id) throws NotFoundException {
+        if (!postRepository.existsById(id)) {
+            throw new NotFoundException("post doesn't exist");
+        }
         return postRepository.getPostById(id);
     }
-    public PostDTORs getPostDTOById(Long id) {
-        return convertPostToDTOrs(postRepository.getPostById(id));
+    public PostDTORs getPostDTOById(Long id) throws NotFoundException {
+        return convertPostToDTOrs(getPostById(id));
     }
 
     @Transactional
@@ -71,8 +74,8 @@ public class PostService {
 
 
     @Transactional
-    public void likePost(Long postId) {
-        Post post = postRepository.getPostById(postId);
+    public void likePost(Long postId) throws NotFoundException {
+        Post post = getPostById(postId);
         int likes = post.getLikes();
         post.setLikes(++likes);
         postRepository.save(post);
@@ -90,9 +93,6 @@ public class PostService {
     @Transactional
     public Long updatePost(PostDTORq postDTORq, Long id) throws NotFoundException {
         Post post = getPostById(id);
-        if (post == null) {
-            throw new NotFoundException("");
-        }
         post.setTitle(postDTORq.getTitle());
         post.setImage(postDTORq.getImage());
         post.setContent(postDTORq.getContent());

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.services;
 
 import javassist.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.dao.Comment;
@@ -11,8 +10,11 @@ import java.util.List;
 
 @Service
 public class CommentService {
-    @Autowired
-    CommentRepository commentRepository;
+    final CommentRepository commentRepository;
+
+    public CommentService(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
 
     public List<Comment> getComments(Long id) {
         return commentRepository.findAllByPostId(id);
@@ -25,8 +27,9 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(String text, Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow();
+    public void updateComment(String text, Long id) throws NotFoundException {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(()->new NotFoundException("comment not found"));
         comment.setText(text);
         commentRepository.save(comment);
     }

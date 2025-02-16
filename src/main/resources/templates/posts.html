@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Лента постов</title>
-    <link rel="stylesheet" href="/styles.css">
 
     <style>
         body {
@@ -92,7 +91,7 @@
         <h2 th:text="${post.title}"></h2>
     </a>
     <div class="limited-text">
-        <span th:text="${post.content}">Текст поста</span>
+        <span th:utext="${#strings.replace(post.content, '\n', '<br>')}"></span>
     </div>
     <div th:if="${post.image}">
         <img class="post-img" th:src="'data:image/png;base64,' + ${post.image}" alt="Изображение поста">
