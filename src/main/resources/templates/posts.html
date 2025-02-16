@@ -66,6 +66,11 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        #pageSize {
+            pointer-events: all; /* Разрешить взаимодействие */
+            z-index: 1000; /* Поднять элемент над другими */
+            background-color: yellow; /* Подсветить элемент для отладки */
+        }
     </style>
 </head>
 <body>
@@ -75,6 +80,12 @@
     <input type="text" name="filter" th:value="${filter}" placeholder="Введите тег">
     <button type="submit">Фильтровать</button>
 </form>
+
+<div class="size-buttons">
+    <button th:classappend="${pageSize == 10} ? 'active' : ''" onclick="changePageSize(10)">10 pages</button>
+    <button th:classappend="${pageSize == 20} ? 'active' : ''" onclick="changePageSize(20)">20 pages</button>
+    <button th:classappend="${pageSize == 50} ? 'active' : ''" onclick="changePageSize(50)">50 pages</button>
+</div>
 
 <div th:each="post : ${posts}" class="post-container">
     <a th:href="@{'/post/' + ${post.id}}">
@@ -101,17 +112,17 @@
 </div>
 
 <div class="pagination">
-        <span th:if="${currentPage > 0}">
-            <a th:href="@{'/posts?page='+ ${currentPage - 1} +'&filter=' + ${filter}}">&laquo; Предыдущая</a>
-        </span>
+    <span th:if="${currentPage > 0}">
+        <a th:href="@{'/posts?page='+ ${currentPage - 1} +'&pageSize=' + ${pageSize} + '&filter=' + ${filter}}">&laquo; Предыдущая</a>
+    </span>
     <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{'/posts?page='+ ${i}+'&filter=' + ${filter}}"
-               th:text="${i + 1}"
-               th:classappend="${i == currentPage} ? 'active' : ''"></a>
-        </span>
+        <a th:href="@{'/posts?page='+ ${i} +'&pageSize=' + ${pageSize} + '&filter=' + ${filter}}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage} ? 'active' : ''"></a>
+    </span>
     <span th:if="${currentPage < totalPages - 1}">
-            <a th:href="@{'/posts?page='+ ${currentPage + 1}+'&filter=' + ${filter}}">Следующая &raquo;</a>
-        </span>
+        <a th:href="@{'/posts?page='+ ${currentPage + 1} +'&pageSize=' + ${pageSize} + '&filter=' + ${filter}}">Следующая &raquo;</a>
+    </span>
 </div>
 
 <div class="form-container">
@@ -140,6 +151,16 @@
         input.name = "tags";
         input.placeholder = "Введите тег";
         container.appendChild(input);
+    }
+</script>
+
+<script>
+    function changePageSize(size) {
+        // let size = document.getElementById("pageSize").value;
+        let urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('pageSize', size);
+        urlParams.set('page', 0);
+        window.location.search = urlParams.toString();
     }
 </script>
 </body>

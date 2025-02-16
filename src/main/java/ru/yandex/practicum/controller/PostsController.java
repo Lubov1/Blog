@@ -7,13 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yandex.practicum.dao.Post;
 import ru.yandex.practicum.dto.PostDTORq;
 import ru.yandex.practicum.dto.PostDTORs;
 import ru.yandex.practicum.dto.TagDTOrq;
-import ru.yandex.practicum.services.CommentService;
 import ru.yandex.practicum.services.PostService;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,11 +21,11 @@ public class PostsController {
 
     @Autowired
     private PostService postService;
-    private int pageSize = 2;
 
     @GetMapping
     public String getPosts(Model model, @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(required = false) String filter) {
+                           @RequestParam(required = false) String filter,
+                           @RequestParam(defaultValue = "10") int pageSize) {
         Page<PostDTORs> posts;
         if (filter != null && !filter.isEmpty() && !filter.equals("null")) {
             posts = postService.getAllPostsByTag(filter, page, pageSize);
@@ -40,6 +37,7 @@ public class PostsController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", posts.getTotalPages());
         model.addAttribute("tag", filter);
+        model.addAttribute("pageSize", pageSize);
         return "posts";
     }
 
