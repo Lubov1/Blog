@@ -19,6 +19,7 @@ public class PostDTORs {
     private String content;
     private List<Comment> comments;
     private List<Tag> tags;
+    private int commentsCount;
 
     public PostDTORs(Post post, List<Comment> comments, List<Tag> tags) {
         this.title = post.getTitle();
@@ -29,6 +30,7 @@ public class PostDTORs {
         this.content = post.getContent();
         this.id = post.getId();
         this.comments = comments;
+        this.commentsCount = comments.size();
         this.tags = tags;
     }
 }

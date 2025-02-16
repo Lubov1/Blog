@@ -18,11 +18,19 @@ public interface PostRepository extends CrudRepository<Post, Long> {
     @Query(value = "SELECT p.* FROM POSTS p " +
             "JOIN TAGS t ON t.POST_ID = p.id " +
             "WHERE t.TEXT = :tagName ORDER BY title LIMIT :limit OFFSET :offset")
-    List<Post> getAllPostsByTag(String tagName, int limit, int offset);
+    List<Post> getAllPostsByTagWithPagination(String tagName, int limit, int offset);
+
+    @Query(value = "SELECT COUNT(*) FROM POSTS p " +
+            "JOIN TAGS t ON t.POST_ID = p.id " +
+            "WHERE t.TEXT = :tagName")
+    long countPostsByTag(String tagName);
+
 
     @Query("SELECT * FROM posts ORDER BY title LIMIT :limit OFFSET :offset")
     List<Post> getAllPostsWithPagination(int limit, int offset);
 
     @Query("SELECT COUNT(*) FROM posts")
     long countPosts();
+
+    void deletePostById(Long id);
 }

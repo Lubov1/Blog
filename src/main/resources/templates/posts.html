@@ -1,114 +1,146 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Посты</title>
-  <link rel="stylesheet" href="/styles.css">
+    <meta charset="UTF-8">
+    <title>Лента постов</title>
+    <link rel="stylesheet" href="/styles.css">
 
-  <style>
-    .limited-text {
-      display: -webkit-box;
-      -webkit-line-clamp: 3; /* Ограничивает до 3 строк */
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
-
-  <style>
-    .active {
-      font-weight: bold;
-      color: red;
-    }
-  </style>
-
-  <script>
-    function likePost(postId) {
-      fetch('/like/' + postId, { method: 'POST' })
-              .then(response => location.reload());
-    }
-
-    function addTagField() {
-      let container = document.getElementById("tagsContainer");
-      let input = document.createElement("input");
-      input.type = "text";
-      input.name = "tags";
-      input.placeholder = "Введите тег";
-      container.appendChild(input);
-    }
-  </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .post-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .limited-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 4.5em;
+            text-overflow: ellipsis;
+        }
+        .post-img {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .filter-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            padding: 5px 10px;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        .pagination a.active {
+            background: #0056b3;
+            font-weight: bold;
+        }
+        .form-container {
+            text-align: center;
+            max-width: 600px;
+            margin: 20px auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
-
 <h1>Лента постов</h1>
-<hr>
 
-<form th:action="@{/posts}" method="get">
-  <input type="text" name="filter" th:value="${filter}" placeholder="Введите тег">
-  <button type="submit">Фильтровать</button>
+<form class="filter-form" th:action="@{/posts}" method="get">
+    <input type="text" name="filter" th:value="${filter}" placeholder="Введите тег">
+    <button type="submit">Фильтровать</button>
 </form>
 
-<!-- Вывод списка постов -->
-<div th:each="post : ${posts}" class="postdtors">
-  <h2 th:text="${post.title}">Заголовок поста</h2>
-  <div class="limited-text">
-    <span th:text="${post.content}">Текст поста</span>
-  </div>
+<div th:each="post : ${posts}" class="post-container">
+    <a th:href="@{'/post/' + ${post.id}}">
+        <h2 th:text="${post.title}"></h2>
+    </a>
+    <div class="limited-text">
+        <span th:text="${post.content}">Текст поста</span>
+    </div>
+    <div th:if="${post.image}">
+        <img class="post-img" th:src="'data:image/png;base64,' + ${post.image}" alt="Изображение поста">
+    </div>
+    <div class="tag">
+        <p th:each="tag : ${post.tags}" th:text="${tag.text}">Тэг</p>
+    </div>
+    <div class="comments">
+        <span th:text="${post.commentsCount}">0</span> комментариев
+    </div>
+    <div class="likes">
+        <span th:text="${post.likes}">0</span> лайков
+        <form th:action="@{'/posts/like?postId=' + ${post.id}}" method="post">
+            <button type="submit">❤️</button>
+        </form>
+    </div>
+</div>
 
-  <!-- Если изображение хранится как BLOB (byte[]), нужно конвертировать в Base64 -->
-  <div th:if="${post.image}">
-    <img th:src="'data:image/png;base64,' + ${post.image}" alt="Изображение поста" width="300">
-  </div>
+<div class="pagination">
+        <span th:if="${currentPage > 0}">
+            <a th:href="@{'/posts?page='+ ${currentPage - 1} +'&filter=' + ${filter}}">&laquo; Предыдущая</a>
+        </span>
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{'/posts?page='+ ${i}+'&filter=' + ${filter}}"
+               th:text="${i + 1}"
+               th:classappend="${i == currentPage} ? 'active' : ''"></a>
+        </span>
+    <span th:if="${currentPage < totalPages - 1}">
+            <a th:href="@{'/posts?page='+ ${currentPage + 1}+'&filter=' + ${filter}}">Следующая &raquo;</a>
+        </span>
+</div>
 
-  <div class="tag">
-    <p th:each="tag : ${post.tags}" th:text="${tag.text}">Тэг</p>
-  </div>
-
-  <div class="likes">
-    <span th:text="${post.likes}">0</span> лайков
-    <form th:action="@{'/posts/like?postId=' + ${post.id}}" method="post">
-      <button type="submit">❤️</button>
+<div class="form-container">
+    <h2>Добавить новый пост</h2>
+    <form th:action="@{/posts/createPost}" method="post" enctype="multipart/form-data">
+        <label>Название:</label>
+        <input type="text" name="title" required><br>
+        <label>Текст:</label>
+        <textarea name="content" required></textarea><br>
+        <label>Изображение:</label>
+        <input type="file" name="image"><br>
+        <label>Теги:</label>
+        <div id="tagsContainer">
+            <input type="text" name="tags" placeholder="Введите тег">
+        </div>
+        <button type="button" onclick="addTagField()">Добавить тег</button><br>
+        <button type="submit">Сохранить пост</button>
     </form>
-  </div>
 </div>
 
-<div>
-    <span th:if="${currentPage > 0}">
-        <a th:href="@{'/posts?page='+ ${currentPage - 1} +'&filter=' + ${filter}}">Предыдущая</a>
-    </span>
-
-  <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-        <a th:href="@{'/posts?page='+ ${i}+'&filter=' + ${filter}}"
-           th:text="${i + 1}"
-           th:classappend="${i == currentPage} ? 'active' : ''"></a>
-    </span>
-
-  <span th:if="${currentPage < totalPages - 1}">
-        <a th:href="@{'/posts?page='+ ${currentPage + 1}+'&filter=' + ${filter}}">Следующая</a>
-    </span>
-</div>
-
-<hr>
-
-<h2>Добавить новый пост</h2>
-
-<form th:action="@{/posts/createPost}" method="post" enctype="multipart/form-data">
-  <label>Название:</label>
-  <input type="text" name="title" required><br>
-
-  <label>Текст:</label>
-  <textarea name="content" required></textarea><br>
-
-  <label>Изображение:</label>
-  <input type="file" name="image" ><br>
-
-  <label>Теги:</label>
-  <div id="tagsContainer">
-    <input type="text" name="tags" placeholder="Введите тег">
-  </div>
-  <button type="button" onclick="addTagField()">Добавить тег</button><br>
-
-  <button type="submit">Сохранить пост</button>
-</form>
-
+<script>
+    function addTagField() {
+        let container = document.getElementById("tagsContainer");
+        let input = document.createElement("input");
+        input.type = "text";
+        input.name = "tags";
+        input.placeholder = "Введите тег";
+        container.appendChild(input);
+    }
+</script>
 </body>
 </html>

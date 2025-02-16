@@ -1,5 +1,7 @@
 package ru.yandex.practicum.services;
 
+import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import ru.yandex.practicum.repositories.PostRepository;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class PostService {
     private final PostRepository postRepository;
@@ -31,16 +34,19 @@ public class PostService {
     public Page<PostDTORs> getAllPosts(int page, int size) {
         int offset = page * size;
         List<Post> posts = postRepository.getAllPostsWithPagination(size, offset);
-        long total = posts.size();
+        long total = postRepository.countPosts();
         return new PageImpl<>(posts.stream().map(this::convertPostToDTOrs).toList(), PageRequest.of(page, size), total);
     }
 
     public Page<PostDTORs> getAllPostsByTag(String tag, int page, int size) {
         int offset = page * size;
-        List<Post> posts = postRepository.getAllPostsByTag(tag, size, offset);
-        long total = posts.size();
+        List<Post> posts = postRepository.getAllPostsByTagWithPagination(tag, size, offset);
+        long total = postRepository.countPostsByTag(tag);
+        System.out.println("total" + total);
+        log.debug("total" + total);
         return new PageImpl<>(posts.stream().map(this::convertPostToDTOrs).toList(), PageRequest.of(page, size), total);
     }
+
 
     public PostDTORs convertPostToDTOrs(Post post) {
         List<Comment> comments = commentService.getComments(post.getId());
@@ -51,6 +57,18 @@ public class PostService {
     public Post getPostById(Long id) {
         return postRepository.getPostById(id);
     }
+    public PostDTORs getPostDTOById(Long id) {
+        return convertPostToDTOrs(postRepository.getPostById(id));
+    }
+
+    @Transactional
+    public void deletePost(Long id) throws NotFoundException {
+        if (!postRepository.existsById(id)) {
+            throw new NotFoundException("Post with id " + id + " does not exist");
+        }
+        postRepository.deleteById(id);
+    }
+
 
     @Transactional
     public void likePost(Long postId) {
@@ -67,5 +85,21 @@ public class PostService {
         for (TagDTOrq tag : post.getTags()) {
             tagService.saveTag(tag, postId);
         }
+    }
+
+    @Transactional
+    public Long updatePost(PostDTORq postDTORq, Long id) throws NotFoundException {
+        Post post = getPostById(id);
+        if (post == null) {
+            throw new NotFoundException("");
+        }
+        post.setTitle(postDTORq.getTitle());
+        post.setImage(postDTORq.getImage());
+        post.setContent(postDTORq.getContent());
+        postRepository.save(post);
+        for (TagDTOrq tag : postDTORq.getTags()) {
+            tagService.saveTag(tag, id);
+        }
+        return id;
     }
 }

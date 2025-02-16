@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Просмотр поста</title>
+  <link rel="stylesheet" href="/styles.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .post-container {
+      max-width: 800px;
+      margin: 20px auto;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .post-img {
+      width: 100%;
+      max-height: 250px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .back-button {
+      display: block;
+      text-align: center;
+      margin: 20px;
+    }
+    .comment-container {
+      margin-top: 20px;
+      padding: 10px;
+      background: #ffffff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+    }
+    .comment-edit {
+      display: none;
+    }
+  </style>
+  <script>
+
+    function toggleEditPost() {
+      let postEdit = document.getElementById("post-edit");
+      if (postEdit.style.display === "none" || postEdit.style.display === "") {
+        postEdit.style.display = "block";
+      } else {
+        postEdit.style.display = "none";
+      }
+    }
+
+    function toggleEditComment(commentId) {
+      let commentText = document.getElementById("comment-text-" + commentId);
+      let commentEdit = document.getElementById("comment-edit-" + commentId);
+      let commentForm = document.getElementById("comment-form-" + commentId);
+
+      if (commentEdit && commentText && commentForm) {
+        let isHidden = commentEdit.style.display === "none" || commentEdit.style.display === "";
+
+        commentText.style.display = isHidden ? "none" : "block";
+        commentEdit.style.display = isHidden ? "block" : "none";
+        commentForm.style.display = isHidden ? "block" : "none";
+
+        commentEdit.querySelector("textarea").focus();
+        if (isHidden) {
+          commentEdit.querySelector("textarea").focus();
+        } else {
+          console.error("!!!!!!: ", commentId);
+        }
+      } else {
+        commentText.style.display = "block";
+        commentEdit.style.display = "none";
+      }
+    }
+
+    function saveComment(event) {
+      let textarea = event.target;
+      let commentForm = textarea.closest('form');
+      let commentId = textarea.getAttribute('data-comment-id');
+      if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault(); // Останавливаем стандартное действие (перенос строки)
+        let textarea = event.target;
+        let form = textarea.closest("form"); // Находим родительскую форму
+        if (form) {
+          form.submit(); // Отправляем форму
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+<a class="back-button" th:href="@{/posts}">&larr; Вернуться к ленте постов</a>
+
+<div class="post-container">
+  <h2 th:text="${post.title}">Заголовок поста</h2>
+
+  <div class="tag">
+    <strong>Теги:</strong>
+    <span th:each="tag : ${post.tags}" th:text="${tag.text}"></span>
+  </div>
+
+  <p th:text="${post.content}">Текст поста</p>
+
+  <div th:if="${post.image}">
+    <img class="post-img" th:src="'data:image/png;base64,' + ${post.image}" alt="Изображение поста">
+  </div>
+
+
+
+  <div class="likes">
+    <span th:text="${post.likes}">0</span> лайков
+    <form th:action="@{'/post/like?postId=' + ${post.id}}" method="post">
+      <button type="submit">❤️</button>
+    </form>
+  </div>
+
+
+  <h3>Комментарии:</h3>
+  <div class="comment-container" th:each="comment : ${post.comments}">
+    <p th:id="'comment-text-' + ${comment.id}" th:text="${comment.text}" th:onclick="|toggleEditComment('${comment.id}')|" style="cursor: pointer;"></p>
+    <button th:id="'edit-button-' + ${comment.id}" type="button" th:onclick="|toggleEditComment('${comment.id}')|">Редактировать</button>
+
+    <form th:id="'comment-form-' + ${comment.id}" th:action="@{/post/{postId}/comments/edit/{commentId}(postId=${post.id},commentId=${comment.id})}" method="post" style="display: none;">
+   <textarea  class="comment-edit" name="commentText"
+                 th:attr="data-comment-id=${comment.id}" th:id="'comment-edit-' + ${comment.id}"
+                th:text="${comment.text}" onkeydown="saveComment(event)"></textarea>
+      <button type="submit">Сохранить</button>
+    </form>
+
+    <form th:action="@{/post/{postId}/comments/delete/{commentId}(postId=${post.id},commentId=${comment.id})}" method="post">
+      <button type="submit">Удалить</button>
+    </form>
+  </div>
+
+  <h3>Добавить комментарий</h3>
+  <form th:action="@{/post/{id}/addcomment(id=${post.id})}" method="post">
+    <textarea name="commentText" placeholder="Введите комментарий" required></textarea><br>
+    <button type="submit">Отправить</button>
+  </form>
+
+  <button onclick="toggleEditPost()">Редактировать пост</button>
+  <div id="post-edit" class="post-edit" style="display:none;">
+    <h3>Редактировать пост</h3>
+
+      <form th:action="@{/post/edit/{id}(id=${post.id})}" method="post" enctype="multipart/form-data">
+        <label>Название:</label>
+        <input type="text" name="title" th:value="${post.title}" required><br>
+        <label>Текст:</label>
+        <textarea name="content" required th:text="${post.content}"></textarea><br>
+        <label>Изображение:</label>
+        <input type="file" name="image"><br>
+        <label>Теги:</label>
+        <div id="tagsContainer">
+          <input type="text" name="tags" th:text="${post.tags}" placeholder="Введите тег">
+        </div>
+        <button type="submit">Сохранить изменения</button>
+      </form>
+  </div>
+
+  <h3>Удалить пост</h3>
+  <form th:action="@{/post/delete/{id}(id=${post.id})}" method="post">
+    <button type="submit" style="background-color: red; color: white;">Удалить пост</button>
+  </form>
+</div>
+</body>
+</html>

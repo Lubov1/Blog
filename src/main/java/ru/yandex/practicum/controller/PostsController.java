@@ -7,10 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.yandex.practicum.dao.Post;
 import ru.yandex.practicum.dto.PostDTORq;
 import ru.yandex.practicum.dto.PostDTORs;
 import ru.yandex.practicum.dto.TagDTOrq;
+import ru.yandex.practicum.services.CommentService;
 import ru.yandex.practicum.services.PostService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.List;
