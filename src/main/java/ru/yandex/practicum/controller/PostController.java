@@ -1,16 +1,14 @@
 package ru.yandex.practicum.controller;
 
 import javassist.NotFoundException;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yandex.practicum.dto.PostDTORq;
 import ru.yandex.practicum.dto.PostDTORs;
-import ru.yandex.practicum.dto.TagDTOrq;
 import ru.yandex.practicum.services.CommentService;
 import ru.yandex.practicum.services.PostService;
 
@@ -19,15 +17,12 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/post")
+@AllArgsConstructor
 public class PostController {
 
     private final CommentService commentService;
     private final PostService postService;
 
-    public PostController(CommentService commentService, PostService postService) {
-        this.commentService = commentService;
-        this.postService = postService;
-    }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/delete/{id}")
@@ -58,13 +53,8 @@ public class PostController {
                              @RequestParam(value = "image", required = false) MultipartFile image,
                              @RequestParam(value = "tags", required = false) List<String> tags,
                              @PathVariable Long id
-    ) throws IOException, NotFoundException {
-        List<TagDTOrq> tg = tags.stream().map(TagDTOrq::new).toList();
-        byte[] im = new byte[0];
-        if (image != null && !image.isEmpty()) {
-            im = image.getBytes();
-        }
-        Long postId = postService.updatePost(new PostDTORq(title, content, im, tg), id);
+    ) throws NotFoundException, IOException {
+        Long postId = postService.updatePost(tags, image, title, content, id);
         return "redirect:/post/"+postId;
     }
 
@@ -90,8 +80,4 @@ public class PostController {
         return "redirect:/post/" + postId;
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
 }
