@@ -40,11 +40,6 @@ class PostServiceTest {
     @Autowired
     PostRepository postRepository;
 
-    @BeforeAll
-    static void setUpBeforeAll() throws Exception {
-
-    }
-
     @BeforeEach
     void setUp() {
         Mockito.reset(postRepository);
@@ -77,7 +72,7 @@ class PostServiceTest {
     }
 
     @Test
-    void likePost() throws IOException, NotFoundException {
+    void likePost() throws NotFoundException {
 
         Post post = new Post();
         post.setId(1L);
