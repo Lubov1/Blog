@@ -2,7 +2,6 @@ package ru.yandex.practicum.services;
 
 
 import javassist.NotFoundException;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,41 +47,34 @@ class PostServiceTest {
     void createPost() throws IOException {
         when(postRepository.save(Mockito.any(Post.class))).thenReturn(new Post());
         postService.createPost(new ArrayList<>(), null, "title", "content");
-        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+        verify(postRepository,times(1)).save(Mockito.eq(new Post(null,"title",new byte[0], 0, "content")));
         verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
     @Test
     void updatePostSuccess() throws IOException, NotFoundException {
-
         Post post = new Post();
+        Long postId = 1L;
         post.setId(1L);
-        val tags = Arrays.asList("one", "two", "three");
+        var tags = Arrays.asList("one", "two", "three");
+        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
 
-
-        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         postService.updatePost(tags, null, "title", "content", 1L);
-        assertEquals(post.getTitle(), "title");
-        assertEquals(post.getContent(), "content");
-        assertEquals(post.getId(), 1L);
-        assertEquals(post.getImage().length, 0);
-        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+
+        verify(postRepository,times(1)).save(Mockito.eq(new Post(1L,"title",new byte[0], 0, "content")));
         verify(tagService,times(3)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
     @Test
     void likePost() throws NotFoundException {
 
-        Post post = new Post();
-        post.setId(1L);
-        post.setLikes(5);
-
+        Post post = new Post(1L, "title", null, 5,"content");
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         postService.likePost(1L);
 
-        assertEquals(post.getLikes(), 6);
-        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+
+        verify(postRepository,times(1)).save(Mockito.eq(new Post(1L,"title",new byte[0], 6, "content")));
         verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
@@ -98,15 +90,15 @@ class PostServiceTest {
 
     @Test
     void imageConverter() throws IOException {
-        val image = postService.imageConverter(null);
+        var image = postService.imageConverter(null);
         assertNotNull(image);
         assertEquals(image.length, 0);
     }
 
     @Test
     void convertPostToDTOrs() {
-        val post = new Post();
-        val postId = 1L;
+        var post = new Post();
+        var postId = 1L;
         post.setId(postId);
         List<Tag> tags = List.of(new Tag("one", postId));
         List<Comment> comments = Arrays.asList(new Comment("one", postId),
@@ -115,7 +107,7 @@ class PostServiceTest {
         when(commentService.getComments(postId)).thenReturn(comments);
         when(tagService.getTags(postId)).thenReturn(tags);
 
-        val postDTORs = postService.convertPostToDTOrs(post);
+        var postDTORs = postService.convertPostToDTOrs(post);
         assertArrayEquals(tags.toArray(),postDTORs.getTags().toArray());
         assertArrayEquals(comments.toArray(),postDTORs.getComments().toArray());
         verify(commentService, times(1)).getComments(postId);

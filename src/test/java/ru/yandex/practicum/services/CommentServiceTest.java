@@ -1,7 +1,6 @@
 package ru.yandex.practicum.services;
 
 import javassist.NotFoundException;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +33,8 @@ class CommentServiceTest {
 
     @Test
     void getComments() {
-        val postId = 1L;
-        val comments = Stream.of("one", "two").map(c->new Comment(c,postId)).toList();
+        var postId = 1L;
+        var comments = Stream.of("one", "two").map(c->new Comment(c,postId)).toList();
         when(commentRepository.findAllByPostId(postId)).thenReturn(comments);
 
         commentService.getComments(postId);
@@ -45,14 +44,14 @@ class CommentServiceTest {
 
     @Test
     void deleteCommentFail() {
-        val postId = 1L;
+        var postId = 1L;
         when(commentRepository.existsById(postId)).thenReturn(false);
         assertThrows(NotFoundException.class, () -> commentService.deleteComment(postId));
     }
 
     @Test
     void deleteComment() throws NotFoundException {
-        val postId = 1L;
+        var postId = 1L;
         when(commentRepository.existsById(postId)).thenReturn(true);
         commentService.deleteComment(postId);
         verify(commentRepository, times(1)).deleteById(postId);
@@ -60,23 +59,24 @@ class CommentServiceTest {
 
     @Test
     void updateComment() throws NotFoundException {
-        val postId = 1L;
+        var postId = 1L;
 
-        val comment = new Comment("one", postId);
+        var comment = new Comment("one", postId);
         when(commentRepository.findById(postId)).thenReturn(Optional.of(comment));
         commentService.updateComment("two", postId);
-        assertEquals("two", comment.getText());
+
+        var updcomment = new Comment("two", postId);
         verify(commentRepository, times(1)).findById(postId);
-        verify(commentRepository, times(1)).save(any(Comment.class));
+        verify(commentRepository, times(1)).save(eq(updcomment));
     }
 
     @Test
     void addComment() {
-        val postId = 1L;
-        val comment = new Comment("one", postId);
+        var postId = 1L;
+        var comment = new Comment("one", postId);
         when(commentRepository.save(Mockito.any(Comment.class))).thenReturn(comment);
         commentService.addComment(postId, "one");
-        verify(commentRepository,times(1)).save(Mockito.any(Comment.class));
+        verify(commentRepository,times(1)).save(eq(comment));
         assertEquals("one", comment.getText());
     }
 }

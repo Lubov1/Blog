@@ -1,6 +1,5 @@
 package ru.yandex.practicum.services;
 
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,8 +33,8 @@ class TagServiceTest {
 
     @Test
     void getTags() {
-        val postId = 1L;
-        val tags = Stream.of("one", "two").map(c->new Tag(c,postId)).toList();
+        var postId = 1L;
+        var tags = Stream.of("one", "two").map(c->new Tag(c,postId)).toList();
 
         when(tagRepository.findAllByPostId(postId)).thenReturn(tags);
 
@@ -46,11 +45,10 @@ class TagServiceTest {
 
     @Test
     void saveTag() {
-        val postId = 1L;
-        val tag = new Tag("one", postId);
+        var postId = 1L;
+        var tag = new Tag("one", postId);
         when(tagRepository.save(Mockito.any(Tag.class))).thenReturn(tag);
         tagService.saveTag(new TagDTOrq("one"), postId);
-        verify(tagRepository,times(1)).save(Mockito.any(Tag.class));
-        assertEquals("one", tag.getText());
+        verify(tagRepository,times(1)).save(eq(tag));
     }
 }
