@@ -3,7 +3,6 @@ package ru.yandex.practicum.services;
 
 import javassist.NotFoundException;
 import lombok.val;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,15 +41,15 @@ class PostServiceTest {
 
     @BeforeEach
     void setUp() {
-        Mockito.reset(postRepository);
+       reset(postRepository);
     }
 
     @Test
     void createPost() throws IOException {
-        Mockito.when(postRepository.save(Mockito.any(Post.class))).thenReturn(new Post());
+        when(postRepository.save(Mockito.any(Post.class))).thenReturn(new Post());
         postService.createPost(new ArrayList<>(), null, "title", "content");
-        Mockito.verify(postRepository, Mockito.times(1)).save(Mockito.any(Post.class));
-        Mockito.verify(tagService, Mockito.times(0)).saveTag(Mockito.any(TagDTOrq.class), Mockito.anyLong());
+        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+        verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
     @Test
@@ -61,14 +60,14 @@ class PostServiceTest {
         val tags = Arrays.asList("one", "two", "three");
 
 
-        Mockito.when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         postService.updatePost(tags, null, "title", "content", 1L);
         assertEquals(post.getTitle(), "title");
         assertEquals(post.getContent(), "content");
         assertEquals(post.getId(), 1L);
         assertEquals(post.getImage().length, 0);
-        Mockito.verify(postRepository, Mockito.times(1)).save(Mockito.any(Post.class));
-        Mockito.verify(tagService, Mockito.times(3)).saveTag(Mockito.any(TagDTOrq.class), Mockito.anyLong());
+        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+        verify(tagService,times(3)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
     @Test
@@ -79,12 +78,12 @@ class PostServiceTest {
         post.setLikes(5);
 
 
-        Mockito.when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         postService.likePost(1L);
 
         assertEquals(post.getLikes(), 6);
-        Mockito.verify(postRepository, Mockito.times(1)).save(Mockito.any(Post.class));
-        Mockito.verify(tagService, Mockito.times(0)).saveTag(Mockito.any(TagDTOrq.class), Mockito.anyLong());
+        verify(postRepository,times(1)).save(Mockito.any(Post.class));
+        verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
     @Test
@@ -92,7 +91,7 @@ class PostServiceTest {
 
         Post post = new Post();
         post.setId(1L);
-        Mockito.when(postRepository.findById(1L)).thenReturn(Optional.empty());
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(NotFoundException.class, () -> postService.updatePost(new ArrayList<>(), null, "title", "content", 1L));
     }
