@@ -1,51 +1,33 @@
 package ru.yandex.practicum.controller;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.services.PostService;
-import ru.yandex.practicum.services.PostServiceConfig;
+import ru.yandex.practicum.configuration.ThymeleafConfiguration;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @SpringJUnitConfig(classes = {
-        DataSourceConfiguration.class,
-        WebConfiguration.class, PostServiceConfig.class})
+        DataSourceConfiguration.class, ThymeleafConfiguration.class, WebConfiguration.class})
 @WebAppConfiguration
-@ComponentScan(basePackages = "ru.yandex.practicum")
-@TestPropertySource(locations = "classpath:test-application.properties")
 class PostsControllerTest {
 
     @Autowired
     private AllPostsController allPostsController;
-//    private PostController postController;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    //    @Mock
-//    private TagService tagService;
-//    @Mock
-//    private CommentService commentService;
-//    @Mock
-//    private PostRepository postRepository;
-//
 
     private MockMvc mockMvc;
 

@@ -8,6 +8,4 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @ComponentScan(basePackages = {"ru.yandex.practicum.controller"})
 public class WebConfiguration {
-
-
 }

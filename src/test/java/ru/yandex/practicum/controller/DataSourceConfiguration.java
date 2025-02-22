@@ -15,12 +15,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import ru.yandex.practicum.repositories.CommentRepository;
+import ru.yandex.practicum.repositories.PostRepository;
+import ru.yandex.practicum.repositories.TagRepository;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJdbcRepositories(basePackages = "ru.yandex.practicum.repositories")
+@EnableJdbcRepositories(basePackageClasses = {CommentRepository.class, PostRepository.class,
+TagRepository.class})
 public class DataSourceConfiguration extends AbstractJdbcConfiguration {
 
     @Bean
