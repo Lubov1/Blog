@@ -1,6 +1,7 @@
-package ru.yandex.practicum.configuration;
+package ru.yandex.practicum.controller;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -20,16 +21,23 @@ import javax.sql.DataSource;
 @Configuration
 @EnableTransactionManagement
 @EnableJdbcRepositories(basePackages = "ru.yandex.practicum.repositories")
-public class JdbcConfig extends AbstractJdbcConfiguration {
+public class DataSourceConfiguration extends AbstractJdbcConfiguration {
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(@Value("${spring.datasource.url}") String url,
+                                 @Value("${spring.datasource.username}") String username,
+                                 @Value("${spring.datasource.password}") String password) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
-        dataSource.setJdbcUrl("jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
+        dataSource.setJdbcUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE");
         dataSource.setUsername("sa");
         dataSource.setPassword("");
+//        dataSource.setd
         dataSource.setMaximumPoolSize(10);
+//
+//        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+//        populator.addScript(new ClassPathResource("test-schema.sql"));
+//        populator.execute(dataSource);
         return dataSource;
     }
 
@@ -58,7 +66,27 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
 
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql"));
+        populator.addScript(new ClassPathResource("test-schema.sql"));
         populator.execute(dataSource);
     }
+//
+//    @Bean
+//    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+//        return new JdbcTemplate(dataSource);
+//    }
+//
+//    @Bean
+//    public NamedParameterJdbcTemplate namedParameterJdbcTemplate(DataSource dataSource) {
+//        return new NamedParameterJdbcTemplate(dataSource);
+//    }
+//
+//    @Bean
+//    public JdbcMappingContext jdbcMappingContext() { // ✅ Добавляем бин, если Spring его не создаёт
+//        return new JdbcMappingContext();
+//    }
+//
+//    @Bean
+//    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+//        return new DataSourceTransactionManager(dataSource);
+//    }
 }
