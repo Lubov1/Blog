@@ -43,14 +43,14 @@ public class AllPostsController {
         return "posts";
     }
 
-    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
+    @ResponseStatus(HttpStatus.SEE_OTHER)
     @PostMapping("/like")
     public String likePost(@RequestParam Long postId) throws NotFoundException {
         postService.likePost(postId);
         return "redirect:/posts";
     }
 
-    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
+    @ResponseStatus(HttpStatus.SEE_OTHER)
     @PostMapping(value ="/createPost", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createPost(@RequestParam("title") String title
             ,@RequestParam("content") String content,
