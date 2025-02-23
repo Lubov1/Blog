@@ -1,5 +1,6 @@
 package ru.yandex.practicum.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import ru.yandex.practicum.dao.Comment;
@@ -9,8 +10,7 @@ import ru.yandex.practicum.dao.Tag;
 import java.util.Base64;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class PostDTORs {
     private Long id;
     private String title;

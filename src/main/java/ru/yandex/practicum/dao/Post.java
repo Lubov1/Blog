@@ -1,13 +1,12 @@
 package ru.yandex.practicum.dao;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("POSTS")
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class Post {
 
     @Id

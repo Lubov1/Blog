@@ -19,6 +19,8 @@ public class CommentService {
     public List<Comment> getComments(Long id) {
         return commentRepository.findAllByPostId(id);
     }
+
+    @Transactional
     public void deleteComment(Long id) throws NotFoundException {
         if (!commentRepository.existsById(id)) {
             throw new NotFoundException("Comment not found");
