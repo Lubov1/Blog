@@ -28,6 +28,5 @@ insert into COMMENTS (TEXT, POST_ID) values ( 'comment3' , 2);
 
 insert into TAGS (TEXT, POST_ID) values ( 'tag1' , 1);
 insert into TAGS (TEXT, POST_ID) values ( 'tag2' , 1);
-
 insert into TAGS (TEXT, POST_ID) values ( 'tag3' , 2);
 

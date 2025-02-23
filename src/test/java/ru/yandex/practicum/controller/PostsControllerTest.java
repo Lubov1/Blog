@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,21 +30,19 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+@Transactional
 @SpringJUnitConfig(classes = { WebConfiguration.class, ServicesConfig.class,
         DataSourceConfiguration.class, ThymeleafConfiguration.class})
 @WebAppConfiguration
+@TestPropertySource(locations = "classpath:test-application.properties")
 class PostsControllerTest {
 
     @Autowired
-    private AllPostsController allPostsController;
+    private PostController postController;
 
 
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Autowired
-    private static JdbcTemplate jdbcTemplate;
 
     private MockMvc mockMvc;
 
@@ -73,7 +72,6 @@ class PostsControllerTest {
         postsDtoRsDefault = Arrays.asList(new PostDTORs(post1, comments, tags), new PostDTORs(post2, comments2, tags2));
     }
 
-    @Transactional
     @Test
     void getAllPosts() throws Exception {
         assertEquals(2, postRepository.countPosts());
@@ -93,7 +91,6 @@ class PostsControllerTest {
         assertEquals(10, result.getModelAndView().getModel().get("pageSize"));
     }
 
-    @Transactional
     @Test
     void likePost() throws Exception {
         assertEquals(2, postRepository.countPosts());
@@ -105,7 +102,6 @@ class PostsControllerTest {
         assertEquals(11, postRepository.getPostById(postId).getLikes());
     }
 
-    @Transactional
     @Test
     void likePostFailed() throws Exception {
         assertEquals(2, postRepository.countPosts());
@@ -115,7 +111,6 @@ class PostsControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
     @Test
     void createPost() throws Exception {
         assertEquals(2, postRepository.countPosts());
