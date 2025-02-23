@@ -16,49 +16,42 @@
 
   <dependencies>
 
-    <!-- Spring Core -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>6.2.1</version>
     </dependency>
 
-    <!-- Spring Web MVC -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>6.2.1</version>
     </dependency>
 
-    <!-- Spring Data JDBC -->
     <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jdbc</artifactId>
       <version>3.4.1</version>
     </dependency>
 
-    <!-- Spring JDBC (обязательно для JdbcTemplate) -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
       <version>6.2.1</version>
     </dependency>
 
-    <!-- Spring TX (Транзакции) -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
       <version>6.2.1</version>
     </dependency>
 
-    <!-- HikariCP (Пул соединений) -->
     <dependency>
       <groupId>com.zaxxer</groupId>
       <artifactId>HikariCP</artifactId>
       <version>5.0.1</version>
     </dependency>
 
-    <!-- H2 Database -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -66,7 +59,6 @@
 <!--      <scope>runtime</scope>-->
     </dependency>
 
-    <!-- Thymeleaf -->
     <dependency>
       <groupId>org.thymeleaf</groupId>
       <artifactId>thymeleaf</artifactId>
@@ -78,7 +70,6 @@
       <version>3.1.2.RELEASE</version>
     </dependency>
 
-    <!-- Jakarta Servlet API (совместимая версия) -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
@@ -97,7 +88,6 @@
       <version>1.5</version>
     </dependency>
 
-    <!-- Логирование (Logback + SLF4J) -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -109,7 +99,6 @@
       <version>1.4.14</version>
     </dependency>
 
-    <!-- Lombok -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -128,15 +117,14 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <version>11.0.14</version>
-      <scope>test</scope> <!-- Указываем, что зависимость только для тестов -->
+      <scope>test</scope>
     </dependency>
 
-    <!-- Jakarta Servlet API -->
     <dependency>
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>6.0.0</version>
-      <scope>test</scope> <!-- Указываем, что зависимость только для тестов -->
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -144,12 +132,6 @@
       <version>5.9.2</version>
       <scope>test</scope>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.junit.jupiter</groupId>-->
-<!--      <artifactId>junit-jupiter-engine</artifactId>-->
-<!--      <version>5.11.2</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
@@ -169,12 +151,6 @@
         <version>2.2</version>
         <scope>test</scope>
       </dependency>
-<!--    <dependency>-->
-<!--      <groupId>jakarta.servlet</groupId>-->
-<!--      <artifactId>jakarta.servlet-api</artifactId>-->
-<!--      <version>4.0.2</version>-->
-<!--      <scope>provided</scope>-->
-<!--    </dependency>-->
 
 
   </dependencies>

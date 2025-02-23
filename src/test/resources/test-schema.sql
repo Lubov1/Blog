@@ -1,5 +1,3 @@
-
-
 CREATE TABLE IF NOT EXISTS POSTS (
                                      ID BIGINT AUTO_INCREMENT PRIMARY KEY,
                                      TITLE VARCHAR(255) NOT NULL,
@@ -20,3 +18,16 @@ CREATE TABLE IF NOT EXISTS TAGS (
                                         POST_ID BIGINT NOT NULL,
                                         FOREIGN KEY (POST_ID) REFERENCES POSTS(ID) ON DELETE CASCADE
 );
+
+insert into POSTS (title, content, likes, image) values ('Первый пост', 'Содержимое поста', 10, NULL);
+insert into POSTS (title, content, likes, image) values ('Второй пост', 'Содержимое поста', 10, NULL);
+
+insert into COMMENTS (TEXT, POST_ID) values ( 'comment1' , 1);
+insert into COMMENTS (TEXT, POST_ID) values ( 'comment2' , 1);
+insert into COMMENTS (TEXT, POST_ID) values ( 'comment3' , 2);
+
+insert into TAGS (TEXT, POST_ID) values ( 'tag1' , 1);
+insert into TAGS (TEXT, POST_ID) values ( 'tag2' , 1);
+
+insert into TAGS (TEXT, POST_ID) values ( 'tag3' , 2);
+
