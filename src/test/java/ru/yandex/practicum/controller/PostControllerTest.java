@@ -5,7 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -52,7 +51,7 @@ public class PostControllerTest {
     @Autowired
     private CommentRepository commentRepository;
     @BeforeEach
-    void setUpEach() throws Exception {
+    void setUpEach() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
@@ -62,7 +61,7 @@ public class PostControllerTest {
 
         Long postId = 1L;
         mockMvc.perform(post("/post/like").param("postId", String.valueOf(postId)))
-                .andExpect(status().isPermanentRedirect());
+                .andExpect(status().isSeeOther());
 
         assertEquals(11, postRepository.getPostById(postId).getLikes());
     }
@@ -80,7 +79,7 @@ public class PostControllerTest {
     void deletePost() throws Exception {
         Long postId = 1L;
         mockMvc.perform(post("/post/delete/{postId}", postId))
-                .andExpect(status().isPermanentRedirect());
+                .andExpect(status().isSeeOther());
 
         assertFalse(postRepository.existsById(postId));
     }
@@ -96,7 +95,7 @@ public class PostControllerTest {
     void deleteComment() throws Exception {
         Long postId = 1L;
         mockMvc.perform(post("/post/{postId}/comments/delete/{commentId}", 1, 1))
-                .andExpect(status().isPermanentRedirect());
+                .andExpect(status().isSeeOther());
 
         assertEquals(1, commentRepository.findAllByPostId(postId).size());
     }
@@ -126,7 +125,7 @@ public class PostControllerTest {
         Long postId = 1L;
         mockMvc.perform(post("/post/{id}/addcomment", postId)
                         .param("commentText", "commentAdded"))
-        .andExpect(status().isPermanentRedirect());
+        .andExpect(status().isSeeOther());
 
         assertEquals(3, commentRepository.findAllByPostId(postId).size());
         assertEquals(1, commentRepository.findAllByPostId(postId).stream().map(Comment::getText)
@@ -138,7 +137,7 @@ public class PostControllerTest {
         Long postId = 1L;
         mockMvc.perform(post("/post/{postId}/comments/edit/{commentId}", postId, 1)
                         .param("commentText", "commentUpdated"))
-                .andExpect(status().isPermanentRedirect());
+                .andExpect(status().isSeeOther());
 
         assertEquals(2, commentRepository.findAllByPostId(postId).size());
         assertEquals(1, commentRepository.findAllByPostId(postId).stream().map(Comment::getText)
@@ -157,7 +156,7 @@ public class PostControllerTest {
                         .param("image", "null")
                         .param("tags", "tag1","tag5")
                         .param("content", "content4"))
-                .andExpect(status().isPermanentRedirect());
+                .andExpect(status().isSeeOther());
 
 
         assertEquals(post, postRepository.findById(postId).get());
