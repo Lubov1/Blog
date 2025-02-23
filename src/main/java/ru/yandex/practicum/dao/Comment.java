@@ -1,14 +1,15 @@
 package ru.yandex.practicum.dao;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Getter
-@Setter
+
 @Table("COMMENTS")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
     public Comment(String text, Long postId) {
         this.text = text;

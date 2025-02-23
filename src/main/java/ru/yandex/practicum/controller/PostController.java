@@ -24,14 +24,14 @@ public class PostController {
     private final PostService postService;
 
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping("/delete/{id}")
     public String deletePost(@PathVariable Long id) throws NotFoundException {
         postService.deletePost(id);
         return "redirect:/posts";
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping("/{postId}/comments/delete/{commentId}")
     public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId) throws NotFoundException {
         commentService.deleteComment(commentId);
@@ -46,7 +46,7 @@ public class PostController {
         return "post";
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping(value = "/edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String updatePost(@RequestParam("title") String title
             ,@RequestParam("content") String content,
@@ -58,7 +58,7 @@ public class PostController {
         return "redirect:/post/"+postId;
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping(value = "/{postId}/comments/edit/{commentId}")
     public String updateComment(@PathVariable Long postId, @PathVariable Long commentId
     , @RequestParam String commentText) throws NotFoundException {
@@ -66,14 +66,14 @@ public class PostController {
         return "redirect:/post/" + postId;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping("/{id}/addcomment")
     public String addComment(@PathVariable Long id, @RequestParam String commentText) {
         commentService.addComment(id, commentText);
         return "redirect:/post/" + id;
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.PERMANENT_REDIRECT)
     @PostMapping("/like")
     public String likePost(@RequestParam Long postId) throws NotFoundException {
         postService.likePost(postId);
