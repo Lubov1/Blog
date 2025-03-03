@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("POSTS")
+@Table("posts")
 @Data
 @AllArgsConstructor
 public class Post {

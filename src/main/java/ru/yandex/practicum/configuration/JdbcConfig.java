@@ -1,6 +1,6 @@
 package ru.yandex.practicum.configuration;
 
-import com.zaxxer.hikari.HikariDataSource;
+import org.postgresql.jdbc3.Jdbc3PoolingDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,12 +29,11 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
                                  @Value("${spring.datasource.username}") String username,
                                  @Value("${spring.datasource.password}") String password,
                                  @Value("${spring.datasource.poolSize}") Integer poolSize) {
-        HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setJdbcUrl(url);
-        dataSource.setUsername(username);
+        Jdbc3PoolingDataSource dataSource = new Jdbc3PoolingDataSource();
+        dataSource.setUrl(url);
+        dataSource.setUser(username);
         dataSource.setPassword(password);
-        dataSource.setMaximumPoolSize(poolSize);
+        dataSource.setMaxConnections(10);
         return dataSource;
     }
 

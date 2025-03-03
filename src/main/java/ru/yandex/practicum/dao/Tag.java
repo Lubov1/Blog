@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("TAGS")
+@Table("tags")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +15,7 @@ public class Tag {
     private Long id;
     private String text;
 
-    @Column("POST_ID")
+    @Column("post_id")
     private Long postId;
 
     public Tag(String text, Long postId) {
