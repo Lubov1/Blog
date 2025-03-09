@@ -1,18 +1,15 @@
 package ru.yandex.practicum.controller;
 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.configuration.ThymeleafConfiguration;
 import ru.yandex.practicum.dao.Comment;
 import ru.yandex.practicum.dao.Post;
 import ru.yandex.practicum.dao.Tag;
@@ -29,18 +26,17 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-@SpringJUnitConfig(classes = { WebConfiguration.class, ServicesConfig.class,
-        DataSourceConfiguration.class, ThymeleafConfiguration.class})
-@WebAppConfiguration
-@TestPropertySource(locations = "classpath:test-application.properties")
+@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@AutoConfigureMockMvc
 public class PostControllerTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
@@ -50,15 +46,12 @@ public class PostControllerTest {
 
     @Autowired
     private CommentRepository commentRepository;
-    @BeforeEach
-    void setUpEach() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+
 
 
     @Test
     void likePost() throws Exception {
-
+        assertEquals(2, postRepository.countPosts());
         Long postId = 1L;
         mockMvc.perform(post("/post/like").param("postId", String.valueOf(postId)))
                 .andExpect(status().isSeeOther());

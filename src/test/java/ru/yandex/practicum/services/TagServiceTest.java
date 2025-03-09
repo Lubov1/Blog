@@ -13,7 +13,7 @@ import ru.yandex.practicum.repositories.TagRepository;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

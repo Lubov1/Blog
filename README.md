@@ -41,10 +41,19 @@
 
 2. **Соберите проект:**
    ```sh
-   mvn clean package
+   gradle clean buildJar
 
-3. **Установите Apache Tomcat**
-4. **Запустите скрипт startup.sh который расположен в bin директории**
-5. **Скопируйте war архив в директорию webapps**
-6. **Блог будет доступен по адресу http://localhost:8080/Blog/posts**
+4. **Запустите скрипт**
+
+- **Если у вас Windows:**
+     ```sh
+     ./build/libs/myApp.bat
+     ```
+   - **Если у вас другая ОС (Linux/macOS):**
+     ```sh
+     ./build/libs/myApp.jar
+     ```
+     
+   
+5. **Блог будет доступен по адресу http://localhost:8080/posts**
    

@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.3'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'ru.yandex.practicum'
+version = '0.0.1-SNAPSHOT'
+
+def isWindows = System.getProperty("os.name").toLowerCase().contains("win")
+def isLinux = System.getProperty("os.name").toLowerCase().contains("nux")
+def isMac = System.getProperty("os.name").toLowerCase().contains("mac")
+springBoot {
+    mainClass = 'ru.yandex.practicum.BlogApplication'
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.javassist:javassist:3.29.2-GA'
+    compileOnly 'org.projectlombok:lombok'
+    implementation 'com.h2database:h2'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+jar {
+    enabled = false
+}
+
+bootJar{
+    archiveFileName.set("myApp.jar")
+    launchScript()
+}
+
+tasks.register("windowsScript") {
+    doLast {
+        def scriptFile = file("${buildDir}/libs/myApp.bat")
+        scriptFile.text = "@echo off\njava -jar \"%~dp0\\myApp.jar\" %*\n"
+        scriptFile.setExecutable(true)
+    }
+}
+
+tasks.named("windowsScript").configure {
+    if (isWindows) {
+        dependsOn("assemble")
+        dependsOn("bootJar")
+    } else {}
+}
+
+task buildJar {
+    if (isWindows) {
+        dependsOn("windowsScript")
+    } else {
+        dependsOn("bootJar")
+    }
+}

@@ -4,14 +4,10 @@ package ru.yandex.practicum.services;
 import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.yandex.practicum.dao.Comment;
 import ru.yandex.practicum.dao.Post;
 import ru.yandex.practicum.dao.Tag;
@@ -24,18 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = PostServiceConfig.class)
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@SpringBootTest(classes = PostService.class)
 class PostServiceTest {
-    @Autowired
+    @MockitoBean
     CommentService commentService;
 
-    @Autowired
+    @MockitoBean
     TagService tagService;
     @Autowired
     PostService postService;
 
-    @Autowired
+    @MockitoBean
     PostRepository postRepository;
 
     @BeforeEach

@@ -1,8 +1,6 @@
 package ru.yandex.practicum.dto;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import ru.yandex.practicum.dao.Comment;
 import ru.yandex.practicum.dao.Post;
 import ru.yandex.practicum.dao.Tag;

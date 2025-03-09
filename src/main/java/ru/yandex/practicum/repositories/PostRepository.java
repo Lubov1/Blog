@@ -1,10 +1,9 @@
 package ru.yandex.practicum.repositories;
 
 import org.springframework.data.jdbc.repository.query.Query;
-import ru.yandex.practicum.dao.Post;
-
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.dao.Post;
 
 import java.util.List;
 

@@ -8,14 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.yandex.practicum.dao.Comment;
+import ru.yandex.practicum.repositories.CommentRepository;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import ru.yandex.practicum.dao.Comment;
-import ru.yandex.practicum.repositories.CommentRepository;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {

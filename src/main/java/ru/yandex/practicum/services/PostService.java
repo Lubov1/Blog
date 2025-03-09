@@ -85,7 +85,7 @@ public class PostService {
         return tags.stream().map(TagDTOrq::new).toList();
     }
 
-    byte[] imageConverter(MultipartFile image) throws IOException {
+     public byte[] imageConverter(MultipartFile image) throws IOException {
         byte[] im = new byte[0];
         if (image != null && !image.isEmpty()) {
             im = image.getBytes();
