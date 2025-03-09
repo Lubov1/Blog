@@ -1,12 +1,12 @@
 package ru.yandex.practicum.configuration;
 
+import liquibase.integration.spring.SpringLiquibase;
 import org.postgresql.jdbc3.Jdbc3PoolingDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.core.mapping.JdbcMappingContext;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
@@ -36,6 +36,13 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
         dataSource.setMaxConnections(10);
         return dataSource;
     }
+    @Bean
+    public SpringLiquibase liquibase(DataSource dataSource) {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog(String.valueOf(this.getClass().getResource("changelog/master.xml")));
+        liquibase.setDataSource(dataSource);
+        return liquibase;
+    }
 
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -61,7 +68,7 @@ public class JdbcConfig extends AbstractJdbcConfiguration {
     public void populate(ContextRefreshedEvent event) {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("schema.sql"));
+//        populator.addScript(new ClassPathResource("schema.sql"));
         populator.execute(dataSource);
     }
 }

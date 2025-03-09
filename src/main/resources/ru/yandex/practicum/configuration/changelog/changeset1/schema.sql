@@ -1,4 +1,6 @@
+--liquibase formatted sql
 
+--changeset dolgaia:1
 
 CREATE TABLE IF NOT EXISTS POSTS (
                                      ID serial PRIMARY KEY,
@@ -20,14 +22,7 @@ CREATE TABLE IF NOT EXISTS TAGS (
                                     post_id BIGINT NOT NULL,
                                     FOREIGN KEY (post_id) REFERENCES POSTS(ID) ON DELETE CASCADE
 );
-insert into POSTS (title, content, likes, image) values ('Первый пост', 'Содержимое поста', 10, NULL);
-insert into POSTS (title, content, likes, image) values ('Второй пост', 'Содержимое поста', 10, NULL);
 
-insert into COMMENTS (text, post_id) values ( 'comment1' , 1);
-insert into COMMENTS (text, post_id) values ( 'comment2' , 1);
-insert into COMMENTS (text, post_id) values ( 'comment3' , 2);
-
-insert into TAGS (text, post_id) values ( 'tag1' , 1);
-insert into TAGS (text, post_id) values ( 'tag2' , 1);
-insert into TAGS (text, post_id) values ( 'tag3' , 2);
-
+--rollback drop table POSTS;
+--rollback drop table TAGS;
+--rollback drop table COMMENTS;
