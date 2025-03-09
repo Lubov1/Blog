@@ -8,7 +8,7 @@ import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 
-@Table("COMMENTS")
+@Table("comments")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class Comment {
     private Long id;
     private String text;
 
-    @Column("POST_ID")
+    @Column("post_id")
     private Long postId;
 }

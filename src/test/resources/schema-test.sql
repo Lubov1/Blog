@@ -1,32 +1,31 @@
-CREATE TABLE IF NOT EXISTS POSTS (
-                                     ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     TITLE VARCHAR(255) NOT NULL,
-                                     CONTENT VARCHAR(255) NOT NULL,
-                                     LIKES INT DEFAULT 0,
-                                     IMAGE VARBINARY(1048576)
+CREATE TABLE IF NOT EXISTS posts (
+                                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                     title VARCHAR(255) NOT NULL,
+                                     content VARCHAR(255) NOT NULL,
+                                     likes INT DEFAULT 0,
+                                     image VARBINARY(1048576)
 );
-CREATE TABLE IF NOT EXISTS COMMENTS (
-                                     ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                     TEXT VARCHAR(255) NOT NULL,
-                                     POST_ID BIGINT NOT NULL,
-                                     FOREIGN KEY (POST_ID) REFERENCES POSTS(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS TAGS (
-                                        ID BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                        TEXT VARCHAR(255) NOT NULL,
-                                        POST_ID BIGINT NOT NULL,
-                                        FOREIGN KEY (POST_ID) REFERENCES POSTS(ID) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS comments (
+                                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                        text VARCHAR(255) NOT NULL,
+                                        post_id BIGINT NOT NULL,
+                                        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
 
-insert into POSTS (title, content, likes, image) values ('Первый пост', 'Содержимое поста', 10, NULL);
-insert into POSTS (title, content, likes, image) values ('Второй пост', 'Содержимое поста', 10, NULL);
+CREATE TABLE IF NOT EXISTS tags (
+                                    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                    text VARCHAR(255) NOT NULL,
+                                    post_id BIGINT NOT NULL,
+                                    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+);
 
-insert into COMMENTS (TEXT, POST_ID) values ( 'comment1' , 1);
-insert into COMMENTS (TEXT, POST_ID) values ( 'comment2' , 1);
-insert into COMMENTS (TEXT, POST_ID) values ( 'comment3' , 2);
+insert into posts (title, content, likes, image) values ('Первый пост', 'Содержимое поста', 10, NULL);
+insert into posts (title, content, likes, image) values ('Второй пост', 'Содержимое поста', 10, NULL);
 
-insert into TAGS (TEXT, POST_ID) values ( 'tag1' , 1);
-insert into TAGS (TEXT, POST_ID) values ( 'tag2' , 1);
-insert into TAGS (TEXT, POST_ID) values ( 'tag3' , 2);
+insert into comments (text, post_id) values ( 'comment1' , 1);
+insert into comments (text, post_id) values ( 'comment2' , 1);
+insert into comments (text, post_id) values ( 'comment3' , 2);
 
+insert into tags (text, post_id) values ( 'tag1' , 1);
+insert into tags (text, post_id) values ( 'tag2' , 1);
+insert into tags (text, post_id) values ( 'tag3' , 2);
