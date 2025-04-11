@@ -44,7 +44,6 @@
    gradle clean buildJar
 
 4. **Запустите команду**
-
     ```sh
     docker compose up
 
