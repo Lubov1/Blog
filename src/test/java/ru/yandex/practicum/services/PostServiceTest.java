@@ -63,18 +63,18 @@ class PostServiceTest {
         verify(tagService,times(3)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
     }
 
-//    @Test
-//    void likePost() throws NotFoundException {
-//
-//        Post post = new Post(1L, "title", null, 5,"content");
-//
-//        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
-//        postService.likePost(1L);
-//
-//
-//        verify(postRepository,times(1)).save(Mockito.eq(new Post(1L,"title",new byte[0], 6, "content")));
-//        verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
-//    }
+    @Test
+    void likePost() throws NotFoundException {
+
+        Post post = new Post(1L, "title", null, 5,"content");
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+        postService.likePost(1L);
+
+
+        verify(postRepository,times(1)).save(Mockito.eq(new Post(1L,"title", null, 6, "content")));
+        verify(tagService,times(0)).saveTag(Mockito.any(TagDTOrq.class),anyLong());
+    }
 
     @Test
     void updatePostFail() {

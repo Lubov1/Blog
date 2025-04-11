@@ -55,7 +55,6 @@ public class PostService {
         return new PostDTORs(post, comments, tags);
     }
 
-    //todo existsbyid delete
     public Post getPostById(Long id) throws NotFoundException {
         return postRepository.findById(id).orElseThrow(()->new NotFoundException("post doesn't exist"));
     }
@@ -95,7 +94,7 @@ public class PostService {
 
     //todo logging
     @Transactional
-    public void createPost(List<String> tags, MultipartFile image,String title, String content) throws IOException {
+    public void createPost(List<String> tags, MultipartFile image, String title, String content) throws IOException {
         Long postId = postRepository.save(new Post(title,
                 imageConverter(image), content)).getId();
         for (TagDTOrq tag : tagsConverter(tags)) {
