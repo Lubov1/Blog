@@ -43,17 +43,10 @@
    ```sh
    gradle clean buildJar
 
-4. **Запустите скрипт**
+4. **Запустите команду**
 
-- **Если у вас Windows:**
-     ```sh
-     ./build/libs/myApp.bat
-     ```
-   - **Если у вас другая ОС (Linux/macOS):**
-     ```sh
-     ./build/libs/myApp.jar
-     ```
-     
-   
+    ```sh
+    docker compose up
+
 5. **Блог будет доступен по адресу http://localhost:8080/posts**
    
