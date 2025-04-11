@@ -8,7 +8,8 @@ services:
     ports:
       - "8181:8181"
     depends_on:
-      - service-db
+      service-db:
+        condition: service_healthy
     environment:
       - SERVER_PORT=8181
       - SPRING_DATASOURCE_URL=jdbc:postgresql://service-db:5432/postgres
@@ -21,9 +22,13 @@ services:
     ports:
       - "15432:5432"
     volumes:
-      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/create_db.sql
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   pgadmin:
     container_name: pgadmin4_container
